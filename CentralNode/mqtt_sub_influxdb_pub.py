@@ -17,7 +17,7 @@ mqtt_broker = {
 	"port": 1883
 }
 
-topic_subscribed = "monitor/+/#"
+topic_subscribed = "monitor/+/+"
 
 def on_connect(client, userdata, flags, rc):
 	print(f"Connected to cloudMQTT with result code {rc}")
@@ -25,7 +25,7 @@ def on_connect(client, userdata, flags, rc):
 
 def on_message(client, userdata, msg):
 	hora = datetime.datetime.now().strftime("%H:%M:%S")
-	value = float(msg.payload.decode('utf8'))
+	value = float(msg.payload)
 	print(f"{hora} Recibido: {msg.topic}: {value}. Se publica a InfluxDB")
 	pub_topic_to_influxdb(msg.topic, value)
 
@@ -43,8 +43,8 @@ if __name__ == "__main__":
 
 	client.connect(mqtt_broker["host"], mqtt_broker["port"])
 
-	
-	
+
+
 	#client.loop_forever()
 	try:
 		while True:
