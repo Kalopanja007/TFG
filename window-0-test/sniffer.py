@@ -15,7 +15,7 @@ def convert_timestamp(unix_ts: float):
     # Obtener la hora actual como una cadena de texto
     return fecha_hora.strftime("%H:%M:%S.%f")[:-3]
 
-def get_window_segment(ts: float, pkg: bytes) -> tuple[str, bytes | None]:
+def get_window_segment(pkg: bytes) -> tuple[bytes | None]:
     '''
         H: unsigned short -> 2 bytes [0 to 65,535]
         s: char           -> 1 byte  [-128 to 127]
@@ -25,7 +25,7 @@ def get_window_segment(ts: float, pkg: bytes) -> tuple[str, bytes | None]:
 
     '''
     
-    err_ret = convert_timestamp(ts), None
+    err_ret = None
 
     if pkg is None:
         return err_ret 
@@ -49,9 +49,9 @@ def get_window_segment(ts: float, pkg: bytes) -> tuple[str, bytes | None]:
             Version                     -> 4 bits
             Longitud de la cabecera     -> 4 bits
             Tipo de servicio            -> 1 byte
-            Longitud total              -> 2 bytes
+            *Longitud total              -> 2 bytes
             Identificación              -> 2 bytes
-            Bandera de fragmentación    -> 3 bits
+            Bandera de fragmentación    -> 3 bits (Dejarlo en bits)
             Desplazamiento de fragmento -> 13 bits
             Tiempo de vida              -> 1 byte
             -> Protocolo                   -> 1 byte
@@ -89,7 +89,7 @@ def get_window_segment(ts: float, pkg: bytes) -> tuple[str, bytes | None]:
     # Extraer la ventana de los paquetes TCP
     window_size = tcph[6]
     
-    return convert_timestamp(ts), window_size
+    return window_size
 
 
 

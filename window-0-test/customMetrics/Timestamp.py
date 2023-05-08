@@ -1,0 +1,3 @@
+
+class Timestamp:
+    pass
