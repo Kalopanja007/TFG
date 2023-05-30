@@ -1,3 +1,0 @@
-
-class Ip:
-    pass

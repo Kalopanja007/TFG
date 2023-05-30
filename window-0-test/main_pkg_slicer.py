@@ -1,9 +1,14 @@
 import sys
 import pcap
 
-from sniffer import get_window_segment, convert_timestamp
+from sniffer import convert_timestamp
 
-from icecream import ic
+from probeTemplates.NetworkProbe import NetworkProbe
+from networkAPI.utils.obj_repr import ObjRepr
+
+from icecream import ic, install
+
+install()
 
 ETH0 = "eth0"
 LO = "lo"
@@ -53,7 +58,6 @@ try:
 
 
         # Obtenemos el tamaño de la ventana + timestamp
-        window_size = get_window_segment(pkg)
 
         hora_rcv = convert_timestamp(ts) 
 
@@ -66,10 +70,24 @@ try:
 
         # if window_size is not None:
         # # if window_size is not None:
-        if window_size==0:
+
+        np = NetworkProbe(ts, pkg)
+
+        if np.tcp_header:
             print("################################################################################################")
-            print(f"[{hora_rcv}]: window_size: {window_size}")
-            ic(ts, pkg)
+            print(f"[{hora_rcv}]:")
+            ic(pkg)
+            ic(np)
+
+            # print(np)
+            # print(type(np.__repr__()))
+
+            d = ObjRepr.dict_repr(np)
+
+            ic(d["tcp_header"]["window_size"])
+            
+            
+            sys.exit()
 
         # # if hora_rcv .-> milisegundo = 0
             # # publicar ↓↓↓↓

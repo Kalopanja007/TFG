@@ -58,6 +58,7 @@ def get_window_segment(pkg: bytes) -> tuple[bytes | None]:
             Checksum                    -> 2 bytes
             Dirección IP de origen      -> 4 bytes
             Dirección IP de destino     -> 4 bytes
+            Opciones                    -> (variable)
         }
     '''
 
