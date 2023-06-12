@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 icecream = "*"
 pcap-ct = "*"
+influxdb = "*"
 
 [dev-packages]
 

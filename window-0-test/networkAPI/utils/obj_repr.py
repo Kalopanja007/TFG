@@ -86,7 +86,7 @@ class ObjRepr:
                     of the class. 
         """
         
-        d = vars(obj)
+        d = vars(obj).copy()
 
         keys = list(d.keys())
 

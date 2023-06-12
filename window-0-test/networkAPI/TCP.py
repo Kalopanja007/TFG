@@ -39,7 +39,7 @@ class TCP:
         self._tcp_pkg = tcp_pkg
 
         # Pkg_attributes
-        self.scr_port       = None # 2  bytes
+        self.src_port       = None # 2  bytes
         self.dst_port       = None # 2  bytes
         self.seq_number     = None # 4  bytes
         self.ack_number     = None # 4  bytes
@@ -71,7 +71,7 @@ class TCP:
         """
 
         # Extracting the fields of the ipernet segment
-        scr_port, dst_port, seq_number, ack_number, hl_resrvd_flags, window_size, checksum, urgent_pointer  = struct.unpack(
+        src_port, dst_port, seq_number, ack_number, hl_resrvd_flags, window_size, checksum, urgent_pointer  = struct.unpack(
             TCP.XTRACT_FLAGS, self._tcp_pkg
         )
 
@@ -87,7 +87,7 @@ class TCP:
         # Pkg_attributes
 
         # 2  bytes
-        self.scr_port       = scr_port
+        self.src_port       = src_port
         
         # 2  bytes
         self.dst_port       = dst_port

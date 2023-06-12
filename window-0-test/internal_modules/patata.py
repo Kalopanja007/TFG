@@ -35,6 +35,10 @@ class Hijo(Padre):
     def get_p_atr(self):
         return self.p_atr
 class Testing:
+
+    def __init__(self,a) -> None:
+        pass
+        return a
     
     def get_var(self):
         self.initialise_var()
@@ -152,7 +156,12 @@ def main6():
 
     ic(d)
 
+def main7():
+    pass
 
+    x = Testing(1)
+    ic(x)
+    
 if __name__ == "__main__":
     pass
     # main1()
@@ -160,6 +169,7 @@ if __name__ == "__main__":
     # main3()
     # main4()
     # main5()
-    main6()
+    # main6()
+    main7()
 
 
