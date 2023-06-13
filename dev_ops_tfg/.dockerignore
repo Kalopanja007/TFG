@@ -1,0 +1,7 @@
+*/.dockerignore*
+envars.sh
+Dockerfile*
+*/*Dockerfile*/*
+docker-compose*
+flask_server
+api_img_gen

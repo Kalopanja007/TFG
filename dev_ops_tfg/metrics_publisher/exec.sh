@@ -1,0 +1,1 @@
+sudo -E $(pipenv --venv)/bin/python influx_publisher.py

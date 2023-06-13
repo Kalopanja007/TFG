@@ -1,0 +1,83 @@
+version: "3.9"
+
+services:
+  
+  genesis:
+    stdin_open: true 
+    tty: true
+    
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        - PROBE_FOLDER
+        - EXEC_SCRIPT
+        - C_WORKDIR
+    environment:
+      - INFLUX_DB_MEASUREMENT
+      - INFLUX_CONTAINER
+      - INFLUX_DB_PORT
+      - INFLUX_DB_NAME
+      - SERVICE_NAME=${GRAY_SCALE_SERVICE}
+    
+    image: ${BASE_IMG}
+
+    hostname: ${M_SERVICE}
+    container_name: ${M_SERVICE}
+
+    volumes:
+      - ./${PROBE_FOLDER}:${C_WORKDIR}
+
+  clone:
+    extends:
+      service: genesis
+    environment:
+      - SERVICE_NAME=${ASCIIART_SERVICE}
+    
+    hostname: ${M_SERVICE_2}
+    container_name: ${M_SERVICE_2}
+  web_server:
+    depends_on:
+      - genesis
+    extends:
+      service: genesis
+
+    build: 
+      context: ./${FLASK_WORKDIR}
+      dockerfile: ./Dockerfile_flask
+      args:
+        - BASE_IMG
+        - FLASK_C_WORKDIR
+        - FLASK_EXEC_SCRIPT
+    image: ${FLASK_IMG}
+    ports:
+      - "${FLASK_PORT}:${FLASK_PORT}"
+
+    hostname: ${FLASK_SERVICE}
+    container_name: ${FLASK_SERVICE}
+
+    environment:
+      - SERVICE_NAME=${IMG_GEN_SERVICE}
+
+    volumes:
+      - ./${FLASK_WORKDIR}:${FLASK_C_WORKDIR}
+
+  # influxdb:
+  #   image: ${INFLUX_IMG}
+
+  #   environment:
+  #     INFLUXDB_DB: homeassistant
+    
+  #   ports:
+  #     - "$INFLUX_DB_PORT:$INFLUX_DB_PORT"
+  #   volumes:
+  #     - ./influxdb:/var/lib/influxdb
+
+  #   container_name: ${INFLUX_CONTAINER}
+  #   hostname: ${INFLUX_CONTAINER}
+
+
+
+# volumes:
+#   metrics_publisher:
+  # ${PROBE_FOLDER}:

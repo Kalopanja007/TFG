@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Texto Flask</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Texto Flask</h1>
+        <form method="POST">
+            <textarea name="text" rows="10" cols="50"></textarea>
+            <br><br>
+            <button type="submit">Mostrar</button>
+        </form>
+        {% if text %}
+            <p>{{ text }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>
