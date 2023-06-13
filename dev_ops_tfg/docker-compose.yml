@@ -36,31 +36,91 @@ services:
     
     hostname: ${M_SERVICE_2}
     container_name: ${M_SERVICE_2}
-  web_server:
+
+
+  # frontend:
+  #   depends_on:
+  #     - genesis
+  #   extends:
+  #     service: genesis
+
+  #   build: 
+  #     context: ./${FRONTEND_WORKDIR}
+  #     dockerfile: ./${FRONTEND_DOCKERFILE}
+  #     args:
+  #       - BASE_IMG
+  #       - FLASK_C_WORKDIR=${FRONTEND_C_WORKDIR}
+  #       - FLASK_EXEC_SCRIPT=${FRONTEND_EXEC_SCRIPT}
+  #   image: ${FRONTEND_IMG}
+  #   ports:
+  #     - "${FRONTEND_PORT}:${FRONTEND_PORT}"
+
+  #   hostname: ${FRONTEND_SERVICE}
+  #   container_name: ${FRONTEND_SERVICE}
+
+  #   environment:
+  #     - SERVICE_NAME=${IMG_GEN_SERVICE}
+  #     - PORT=${FRONTEND_PORT}
+
+
+  #   volumes:
+  #     - ./${FRONTEND_WORKDIR}:${FRONTEND_C_WORKDIR}
+  
+  text_descriptor:
     depends_on:
       - genesis
     extends:
       service: genesis
 
-    build: 
-      context: ./${FLASK_WORKDIR}
-      dockerfile: ./Dockerfile_flask
+    build:
+      context: ./${TEXT_DESCRIPTOR_WORKDIR}
+      dockerfile: ./${TEXT_DESCRIPTOR_DOCKERFILE}
       args:
         - BASE_IMG
-        - FLASK_C_WORKDIR
-        - FLASK_EXEC_SCRIPT
-    image: ${FLASK_IMG}
+        - FLASK_C_WORKDIR=${TEXT_DESCRIPTOR_C_WORKDIR}
+        - FLASK_EXEC_SCRIPT=${TEXT_DESCRIPTOR_EXEC_SCRIPT}
+    image: ${TEXT_DESCRIPTOR_IMG}
     ports:
-      - "${FLASK_PORT}:${FLASK_PORT}"
+      - "${TEXT_DESCRIPTOR_PORT}:${TEXT_DESCRIPTOR_PORT}"
 
-    hostname: ${FLASK_SERVICE}
-    container_name: ${FLASK_SERVICE}
+    hostname: ${TEXT_DESCRIPTOR_SERVICE}
+    container_name: ${TEXT_DESCRIPTOR_SERVICE}
 
     environment:
       - SERVICE_NAME=${IMG_GEN_SERVICE}
+      - PORT=${TEXT_DESCRIPTOR_PORT}
 
     volumes:
-      - ./${FLASK_WORKDIR}:${FLASK_C_WORKDIR}
+      - ./${TEXT_DESCRIPTOR_WORKDIR}:${TEXT_DESCRIPTOR_C_WORKDIR}
+
+  # img_uploader:
+  #   depends_on:
+  #     - genesis
+  #   extends:
+  #     service: genesis
+
+  #   build: 
+  #     context: ./${FRONTEND_WORKDIR}
+  #     dockerfile: ./Dockerfile_flask
+  #     args:
+  #       - BASE_IMG
+  #       - FRONTEND_C_WORKDIR
+  #       - FRONTEND_EXEC_SCRIPT
+  #   image: ${FRONTEND_IMG}
+  #   ports:
+  #     - "${IMG_UPLOADER_PORT}:${IMG_UPLOADER_PORT}"
+
+  #   hostname: ${FRONTEND_SERVICE}
+  #   container_name: ${FRONTEND_SERVICE}
+
+  #   environment:
+  #     - SERVICE_NAME=${IMG_GEN_SERVICE}
+
+  #   volumes:
+  #     - ./${FRONTEND_WORKDIR}:${FRONTEND_C_WORKDIR}
+
+
+
 
   # influxdb:
   #   image: ${INFLUX_IMG}
