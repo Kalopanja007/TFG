@@ -2,6 +2,7 @@ ARG BASE_IMG="flask"
 FROM ${BASE_IMG}
 
 ARG FLASK_C_WORKDIR="flask_server"
+# ENV FLASK_C_WORKDIR ${FLASK_C_WORKDIR}
 # Moving project and installing dependencies 
 WORKDIR ${FLASK_C_WORKDIR}
 COPY . .
@@ -15,6 +16,7 @@ ENV FLASK_EXEC_SCRIPT ${FLASK_EXEC_SCRIPT}
 
 # Copy the script
 COPY ./base_n_flask.sh /base_n_flask.sh
-RUN sudo chmod +x /${FLASK_EXEC_SCRIPT}
-CMD /${FLASK_EXEC_SCRIPT}
+# RUN sudo chmod +x /${FLASK_EXEC_SCRIPT}
+RUN sudo chmod +x /base_n_flask.sh
+CMD /base_n_flask.sh
 

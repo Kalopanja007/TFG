@@ -12,7 +12,7 @@ sudo service ssh start > /dev/null
 
 # the my_helper_process might need to know how to wait on the
 # primary process to start before it does its work and returns
-${FLASK_C_WORKDIR}/$(pipenv --venv)/bin/python -m flask run --host="0.0.0.0" &
+$(pipenv --venv)/bin/python -m flask run --host="0.0.0.0" --port=$PORT &
 
 # now we bring the primary process back into the foreground
 # and leave it there
