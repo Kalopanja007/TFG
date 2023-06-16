@@ -1,41 +1,92 @@
 version: "3.9"
 
 services:
-  
+
+  influxdb:
+    image: ${INFLUX_IMG}
+    container_name: ${INFLUX_CONTAINER}
+    hostname: ${INFLUX_CONTAINER}
+    environment:
+      - INFLUXD_REPORTING_DISABLED=true
+      - INFLUXDB_DB=${INFLUX_DB_NAME}
+      - INFLUXDB_ADMIN_USER="admin"
+      - INFLUXDB_ADMIN_PASSWORD="admin"
+    ports:
+      - '8086:8086'
+    volumes:
+      - influxdb_data:/var/lib/influxdb
+
+  grafana:
+    depends_on:
+      - influxdb
+    image: ${GRAFANA_IMG}
+    container_name: ${GRAFANA_CONTAINER}
+    #environment:
+     #- GF_SERVER_ROOT_URL=http://my.grafana.server/
+     #- GF_INSTALL_PLUGINS=grafana-clock-panel
+    ports:
+     - '${GRAFANA_PORT}:${GRAFANA_PORT}'
+    volumes:
+     - grafana_data:/var/lib/grafana
+
   genesis:
-    stdin_open: true 
-    tty: true
-    
+    depends_on:
+      - influxdb
     build:
       context: .
       dockerfile: ./Dockerfile
       args:
         - PROBE_FOLDER
-        - EXEC_SCRIPT
         - C_WORKDIR
     environment:
-      - INFLUX_DB_MEASUREMENT
       - INFLUX_CONTAINER
       - INFLUX_DB_PORT
       - INFLUX_DB_NAME
-      - SERVICE_NAME=${GRAY_SCALE_SERVICE}
-    
+      - C_WORKDIR
     image: ${BASE_IMG}
-
-    hostname: ${M_SERVICE}
-    container_name: ${M_SERVICE}
-
     volumes:
       - ./${PROBE_FOLDER}:${C_WORKDIR}
 
   clone:
     extends:
       service: genesis
+    stdin_open: true 
+    tty: true
     environment:
-      - SERVICE_NAME=${ASCIIART_SERVICE}
-    
+      - SERVICE_NAMES=${ASCIIART_SERVICE}
+      - MICROSERVICE=${M_SERVICE_2}
     hostname: ${M_SERVICE_2}
     container_name: ${M_SERVICE_2}
+    command: /bin/bash
+
+  testgrafana:
+    depends_on:
+      - influxdb
+    extends:
+      service: genesis
+    build:
+    #  context: .
+      dockerfile: ./DockerfileGrafanaTest
+      args:
+        - BASE_IMG
+        - GRAFANA_IMG
+    #     - PROBE_FOLDER
+    #     #- EXEC_SCRIPT
+    #     - C_WORKDIR
+    # environment:
+    #   - INFLUX_CONTAINER
+    #   - INFLUX_DB_PORT
+    #   - INFLUX_DB_NAME
+    #   - SERVICE_NAMES=${GRAY_SCALE_SERVICE}
+    #   - C_WORKDIR
+    #image: ${GRAFANA_IMG}
+    container_name: testgrafana
+    ports:
+     - '3001:${GRAFANA_PORT}'
+    hostname: testgrafanita
+    volumes:
+     - grafana_data_test:/var/lib/grafana
+
 
 
   # frontend:
@@ -59,39 +110,39 @@ services:
   #   container_name: ${FRONTEND_SERVICE}
 
   #   environment:
-  #     - SERVICE_NAME=${IMG_GEN_SERVICE}
+  #     - SERVICE_NAMES=${IMG_GEN_SERVICE}
   #     - PORT=${FRONTEND_PORT}
 
 
   #   volumes:
   #     - ./${FRONTEND_WORKDIR}:${FRONTEND_C_WORKDIR}
   
-  text_descriptor:
-    depends_on:
-      - genesis
-    extends:
-      service: genesis
+  # text_descriptor:
+  #   depends_on:
+  #     - genesis
+  #   extends:
+  #     service: genesis
 
-    build:
-      context: ./${TEXT_DESCRIPTOR_WORKDIR}
-      dockerfile: ./${TEXT_DESCRIPTOR_DOCKERFILE}
-      args:
-        - BASE_IMG
-        - FLASK_C_WORKDIR=${TEXT_DESCRIPTOR_C_WORKDIR}
-        - FLASK_EXEC_SCRIPT=${TEXT_DESCRIPTOR_EXEC_SCRIPT}
-    image: ${TEXT_DESCRIPTOR_IMG}
-    ports:
-      - "${TEXT_DESCRIPTOR_PORT}:${TEXT_DESCRIPTOR_PORT}"
+  #   build:
+  #     context: ./${TEXT_DESCRIPTOR_WORKDIR}
+  #     dockerfile: ./${TEXT_DESCRIPTOR_DOCKERFILE}
+  #     args:
+  #       - BASE_IMG
+  #       - FLASK_C_WORKDIR=${TEXT_DESCRIPTOR_C_WORKDIR}
+  #       - FLASK_EXEC_SCRIPT=${TEXT_DESCRIPTOR_EXEC_SCRIPT}
+  #   image: ${TEXT_DESCRIPTOR_IMG}
+  #   ports:
+  #     - "${TEXT_DESCRIPTOR_PORT}:${TEXT_DESCRIPTOR_PORT}"
 
-    hostname: ${TEXT_DESCRIPTOR_SERVICE}
-    container_name: ${TEXT_DESCRIPTOR_SERVICE}
+  #   hostname: ${TEXT_DESCRIPTOR_SERVICE}
+  #   container_name: ${TEXT_DESCRIPTOR_SERVICE}
 
-    environment:
-      - SERVICE_NAME=${IMG_GEN_SERVICE}
-      - PORT=${TEXT_DESCRIPTOR_PORT}
+  #   environment:
+  #     - SERVICE_NAMES=${IMG_GEN_SERVICE}
+  #     - PORT=${TEXT_DESCRIPTOR_PORT}
 
-    volumes:
-      - ./${TEXT_DESCRIPTOR_WORKDIR}:${TEXT_DESCRIPTOR_C_WORKDIR}
+  #   volumes:
+  #     - ./${TEXT_DESCRIPTOR_WORKDIR}:${TEXT_DESCRIPTOR_C_WORKDIR}
 
   # img_uploader:
   #   depends_on:
@@ -114,30 +165,14 @@ services:
   #   container_name: ${FRONTEND_SERVICE}
 
   #   environment:
-  #     - SERVICE_NAME=${IMG_GEN_SERVICE}
+  #     - SERVICE_NAMES=${IMG_GEN_SERVICE}
 
   #   volumes:
   #     - ./${FRONTEND_WORKDIR}:${FRONTEND_C_WORKDIR}
 
 
+volumes:
+  influxdb_data:
+  grafana_data:
+  grafana_data_test:
 
-
-  # influxdb:
-  #   image: ${INFLUX_IMG}
-
-  #   environment:
-  #     INFLUXDB_DB: homeassistant
-    
-  #   ports:
-  #     - "$INFLUX_DB_PORT:$INFLUX_DB_PORT"
-  #   volumes:
-  #     - ./influxdb:/var/lib/influxdb
-
-  #   container_name: ${INFLUX_CONTAINER}
-  #   hostname: ${INFLUX_CONTAINER}
-
-
-
-# volumes:
-#   metrics_publisher:
-  # ${PROBE_FOLDER}:

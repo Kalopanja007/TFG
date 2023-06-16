@@ -1,0 +1,6 @@
+ARG BASE_IMG="base"
+ARG GRAFANA_IMG="base"
+
+FROM ${GRAFANA_IMG} as grafana_mixed
+
+FROM ${BASE_IMG} as base_mixed

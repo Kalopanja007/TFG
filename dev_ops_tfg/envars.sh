@@ -2,17 +2,21 @@
 export PROBE_FOLDER=metrics_publisher
 export C_WORKDIR=/home/ubuntu/${PROBE_FOLDER}
 export BASE_IMG=base_img
-export EXEC_SCRIPT=bash_n_ssh.sh
-export M_SERVICE=parent
 
+# ------------------------------------------------
+export INFLUX_IMG=influxdb:1.8-alpine
 export INFLUX_CONTAINER=influxdb
-export INFLUX_IMG=influxdb:1.8.10
 
 export INFLUX_DB_NAME=monitoring
-export INFLUX_DB_MEASUREMENT=networking
 export INFLUX_DB_PORT=8086
 # ------------------------------------------------
+export GRAFANA_IMG=grafana/grafana-enterprise
+export GRAFANA_CONTAINER=grafana
 
+export 	GRAFANA_PORT=3000
+# ------------------------------------------------
+
+#export M_SERVICE=parent
 export M_SERVICE_2=son
 
 
@@ -45,10 +49,8 @@ export IMG_UPLOADER_C_WORKDIR=/home/ubuntu/${FRONTEND_WORKDIR}
 export IMG_UPLOADER_EXEC_SCRIPT=base_n_flask.sh
 # ------------------------------------------------
 # ------------------------------------------------
-export ASCIIART_SERVICE=ASCIIART_SERVICE
+export ASCIIART_SERVICE=ASCIIART_SERVICE,TEST_SERVICE
 export GRAY_SCALE_SERVICE=GRAY_SCALE_SERVICE
 export IMG_GEN_SERVICE=IMG_GEN_SERVICE
-
-
 
 
