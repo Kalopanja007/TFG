@@ -6,14 +6,15 @@ def get_microservice_name():
 
     return socket.gethostname()
 
+def get_my_mac() -> str:
+    
+    import uuid
+    
+    return (':'.join(['{:02x}'.format((uuid.getnode() >> ele) & 0xff)
+    for ele in range(0,8*6,8)][::-1]))
+
 def get_pkg_direction(np: NetworkProbe):
     
-    def get_my_mac() -> str:
-        
-        import uuid
-        
-        return (':'.join(['{:02x}'.format((uuid.getnode() >> ele) & 0xff)
-        for ele in range(0,8*6,8)][::-1]))
     
     if not np or not np.eth_header:
         return None

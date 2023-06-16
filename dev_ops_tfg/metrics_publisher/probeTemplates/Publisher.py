@@ -19,7 +19,6 @@ class InfluxDB(Publisher):
     PORT = 8086
 
     def __init__(self, db_name=None, host=None, port=PORT):
-        pass
         from influxdb import InfluxDBClient
 
         self.db_name = db_name
@@ -30,7 +29,7 @@ class InfluxDB(Publisher):
 
 
     def publish(self, data: list[dict[str, str | int]]) -> None:
-        pass
-        
-        self.client.write_points(points=data)
+        self.client.write_points(points=data, time_precision='ms')
 
+    def query(self, data: str):
+        return list(self.client.query(data).get_points())
