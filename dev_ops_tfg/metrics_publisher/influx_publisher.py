@@ -77,6 +77,39 @@ def influxdb_server_ip():
 
 
 
+def publish_accum_data(num_bytes_in, num_bytes__out, num_packets_in, num_packets_out, num_secs):
+    bitrate_in = num_bytes_in * 8 / num_secs
+    bitrate_out = num_bytes_out * 8 / num_secs
+    data_in = {
+        "measurement": "bandwidth",
+        "tags": {
+            "microservice": get_microservice_name(),
+            "pkg_direction": "in"
+        },
+        "fields": {
+            "bitrate": bitrate_in,
+            "numpaqs": num_packets_in
+        }
+    }
+    data_out = {
+        "measurement": "bandwidth",
+        "tags": {
+            "microservice": get_microservice_name(),
+            "pkg_direction": "out"
+        },
+        "fields": {
+            "bitrate": bitrate_out,
+            "numpaqs": num_packets_out
+        }
+    }
+
+    try:
+        publisher.publish([data_in])
+        publisher.publish([data_out])
+    except:
+        print("Error writing Bandwidth data")
+
+
 def process_all_data(np: NetworkProbe):
     data = {
         "measurement": "alldata",
@@ -119,25 +152,7 @@ def influxdb_ready(influxdb_host:str):
         return False
 
 
-if __name__ == "__main__":
-
-    INFLUX_DB_NAME     = os.environ.get("INFLUX_DB_NAME", "influx")
-    DB_HOST     = os.environ.get("INFLUX_CONTAINER", "influxdb")
-    INFLUX_DB_PORT     = int(os.environ.get("INFLUX_DB_PORT", 8086))
-
-
-    ic(INFLUX_DB_NAME)
-    ic(DB_HOST)
-    ic(INFLUX_DB_PORT)
-
-    publisher = InfluxDB(db_name=INFLUX_DB_NAME, host=DB_HOST, port=INFLUX_DB_PORT)
-
-    # Wait until influxdb server is found
-
-    wait(lambda: influxdb_ready(DB_HOST), sleep_seconds=5)
-
-
-
+def publish_services_devoted(publisher: InfluxDB):
     # Publish services and microservice
 
     SERVICE_NAMES = os.environ.get("SERVICE_NAMES", "no_service")
@@ -159,6 +174,20 @@ if __name__ == "__main__":
             publisher.publish([data])
     except:
         print("Error updating list of services for this microservice. List outdated")
+
+
+if __name__ == "__main__":
+
+    INFLUX_DB_NAME     = os.environ.get("INFLUX_DB_NAME", "influx")
+    DB_HOST     = os.environ.get("INFLUX_CONTAINER", "influxdb")
+    INFLUX_DB_PORT     = int(os.environ.get("INFLUX_DB_PORT", 8086))
+
+
+    ic(INFLUX_DB_NAME)
+    ic(DB_HOST)
+    ic(INFLUX_DB_PORT)
+
+    publisher = InfluxDB(db_name=INFLUX_DB_NAME, host=DB_HOST, port=INFLUX_DB_PORT)
 
 
     install()
@@ -185,12 +214,59 @@ if __name__ == "__main__":
     # ancho_banda = ancho_banda_p = v_0 = 0
 
 
+    # Wait until influxdb server is found
+
+    wait(lambda: influxdb_ready(DB_HOST), sleep_seconds=5)
 
 
+    t_inicper = 0   # Accounts for data (bits/sec and num. packets) in a period of 10 seconds
+    num_bytes_in = 0
+    num_bytes_out = 0
+    num_packets_in = 0
+    num_packets_out = 0
+
+    t_pubservices_inicper = 0
     try:
         for ts, pkg in pc:
 
+            # Periodic publishing of services devoted by this microservice, in 'services' measurement
+            # Being periodic, instead of a one off when starting the microservice has two advantages:
+            # - If InflixDB data is lost, 'services' measurement will be filled in again in a short period of time
+            # - Publishing every few seconds informs that the microservide is alive
+            if t_pubservices_inicper==0:
+                t_pubservices_inicper = ts
+            if ts - t_pubservices_inicper > 30:
+                publish_services_devoted(publisher)
+                t_pubservices_inicper = ts
+
+
             np = NetworkProbe(ts, pkg)
+            pkg_direction = get_pkg_direction(np)
+            if (pkg_direction):
+                pkg_size = get_pkg_size(np)
+                if pkg_direction == 'in':
+                    if pkg_size:
+                        num_bytes_in += pkg_size
+                    num_packets_in += 1
+                else:
+                    if pkg_size:
+                        num_bytes_out += pkg_size
+                    num_packets_out += 1
+
+            if t_inicper==0:
+                t_inicper = ts
+            if ts - t_inicper > 10:
+                t_period = ts - t_inicper
+                t_inicper = ts
+                publish_accum_data(num_bytes_in, num_bytes_out, num_packets_in, num_packets_out, t_period)
+                num_bytes_in = 0
+                num_bytes_out = 0
+                num_packets_in = 0
+                num_packets_out = 0
+
+
+
+
             #show_details(np)
             data = process_networkpackage(np)
             if data:
