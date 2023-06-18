@@ -16,8 +16,6 @@ export GRAFANA_CONTAINER=grafana
 export 	GRAFANA_PORT=3000
 # ------------------------------------------------
 
-#export M_SERVICE=parent
-export M_SERVICE_2=son
 
 
 # ------------------------------------------------
