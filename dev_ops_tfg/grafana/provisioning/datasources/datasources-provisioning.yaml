@@ -1,0 +1,16 @@
+#https://grafana.com/docs/grafana/latest/datasources/influxdb/#provision-the-data-source
+apiVersion: 1
+
+datasources:
+  - name: InfluxDB
+    type: influxdb
+    isDefault: true
+    #uid: "pericolospalotes"
+    #access: proxy
+    #user: grafana
+    url: http://influxdb:8086
+    jsonData:
+      dbName: monitoring
+      httpMode: POST
+    #secureJsonData:
+    #  password: grafana
