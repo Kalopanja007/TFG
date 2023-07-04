@@ -5,7 +5,7 @@ datasources:
   - name: InfluxDB
     type: influxdb
     isDefault: true
-    #uid: "pericolospalotes"
+    uid: "c3c7699e-29c0-41d9-bab2-e354b32ae05f"
     #access: proxy
     #user: grafana
     url: http://influxdb:8086

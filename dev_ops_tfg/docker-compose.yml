@@ -3,8 +3,15 @@ version: "3.9"
 services:
 
   influxdb:
-    image: ${INFLUX_IMG}
+    build:
+      dockerfile: "DockerfileInfluxdb"
+      target: influx_tgt
+      args:
+        - INFLUX_IMG
+    image: influx_img
     container_name: ${INFLUX_CONTAINER}
+    stdin_open: true
+    tty: true
     hostname: ${INFLUX_CONTAINER}
     environment:
       - INFLUXD_REPORTING_DISABLED=true
@@ -22,44 +29,39 @@ services:
       - influxdb
     image: ${GRAFANA_IMG}
     container_name: ${GRAFANA_CONTAINER}
-    #environment:
-     #- GF_SERVER_ROOT_URL=http://my.grafana.server/
-     #- GF_INSTALL_PLUGINS=grafana-clock-panel
+    environment:
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning  # Default value, but to ensure it
     ports:
       - '${GRAFANA_PORT}:${GRAFANA_PORT}'
     volumes:
-      - grafana_data:/var/lib/grafana
-
-  # For testing provisioning
-  # grafana2:
-  #   depends_on:
-  #     - influxdb
-  #   image: ${GRAFANA_IMG}
-  #   container_name: grafana_prueba_cont
-  #   environment:
-  #    #- GF_SERVER_ROOT_URL=http://my.grafana.server/
-  #    #- GF_INSTALL_PLUGINS=grafana-clock-panel
-  #     - GF_PATHS_PROVISIONING=/etc/grafana/provisioning  # Default value, but to ensure ir
-  #     #- GF_AUTH_DISABLE_LOGIN_FORM=true
-  #     #- GF_AUTH_ANONYMOUS_ENABLED=true
-  #     #- GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
-  #   ports:
-  #    - '3001:${GRAFANA_PORT}'
-  #   volumes:
-  #     #- grafana_data_test:/var/lib/grafana
-  #     # Doc: https://grafana.com/docs/grafana/latest/administration/provisioning/#dashboards
-  #     #- ./grafana/dashboard.yaml:/etc/grafana/provisioning/dashboards/main.yaml
-  #     #- ./grafana/dashboards:/var/lib/grafana/dashboards
-  #     - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/provisioning:/etc/grafana/provisioning
 
 
+  # For testing
+  grafana2:
+    depends_on:
+      - influxdb
+    image: grafana_test
+    container_name: grafana_prueba_cont
+    environment:
+     #- GF_SERVER_ROOT_URL=http://my.grafana.server/
+     #- GF_INSTALL_PLUGINS=grafana-clock-panel
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning  # Default value, but to ensure ir
+      #- GF_AUTH_DISABLE_LOGIN_FORM=true
+      #- GF_AUTH_ANONYMOUS_ENABLED=true
+      #- GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+    ports:
+     - '3001:${GRAFANA_PORT}'
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
 
   genesis:
     depends_on:
       - influxdb
     build:
       context: .
-      dockerfile: ./Dockerfile
+      target: ${BASE_IMG}
+      #dockerfile: ./Dockerfile
       args:
         - PROBE_FOLDER
         - C_WORKDIR
@@ -82,7 +84,6 @@ services:
       - MICROSERVICE=Frontend
     hostname: Frontend
     container_name: Frontend
-    command: /bin/bash
 
   MServ_2:
     extends:
@@ -94,7 +95,6 @@ services:
       - MICROSERVICE=TextDescriptor
     hostname: TextDescriptor
     container_name: TextDescriptor
-    command: /bin/bash
 
   MServ_3:
     extends:
@@ -106,7 +106,6 @@ services:
       - MICROSERVICE=APICaller
     hostname: APICaller
     container_name: APICaller
-    command: /bin/bash
 
   MServ_4:
     extends:
@@ -115,10 +114,9 @@ services:
     tty: true
     environment:
       - SERVICE_NAMES=IMG_GEN,ASCII_ART,GRAY_SCALE
-      - MICROSERVICE=ShowData
-    hostname: ShowData
-    container_name: ShowData
-    command: /bin/bash
+      - MICROSERVICE=Showdata
+    hostname: Showdata
+    container_name: Showdata
 
   MServ_5:
     extends:
@@ -130,7 +128,6 @@ services:
       - MICROSERVICE=ImgUploader
     hostname: ImgUploader
     container_name: ImgUploader
-    command: /bin/bash
 
   MServ_6:
     extends:
@@ -142,7 +139,6 @@ services:
       - MICROSERVICE=ASCIIArt
     hostname: ASCIIArt
     container_name: ASCIIArt
-    command: /bin/bash
 
   MServ_7:
     extends:
@@ -154,124 +150,38 @@ services:
       - MICROSERVICE=GrayScale
     hostname: GrayScale
     container_name: GrayScale
-    command: /bin/bash
 
+  videosrv:
+    extends:
+      service: genesis
+    build:
+      target: videosrv_tgt
+    image: videosrv_img
+    stdin_open: true
+    tty: true
+    environment:
+      - SERVICE_NAMES=GRAY_SCALE
+      - MICROSERVICE=VideoSrv
+    hostname: VideoSrv
+    container_name: VideoSrv
 
-
-
-  # testgrafana:
-  #   depends_on:
-  #     - influxdb
-  #   extends:
-  #     service: genesis
-  #   build:
-  #   #  context: .
-  #     dockerfile: ./DockerfileGrafanaTest
-  #     args:
-  #       - BASE_IMG
-  #       - GRAFANA_IMG
-  #   #     - PROBE_FOLDER
-  #   #     #- EXEC_SCRIPT
-  #   #     - C_WORKDIR
-  #   # environment:
-  #   #   - INFLUX_CONTAINER
-  #   #   - INFLUX_DB_PORT
-  #   #   - INFLUX_DB_NAME
-  #   #   - SERVICE_NAMES=${GRAY_SCALE_SERVICE}
-  #   #   - C_WORKDIR
-  #   #image: ${GRAFANA_IMG}
-  #   container_name: testgrafana
-  #   ports:
-  #    - '3001:${GRAFANA_PORT}'
-  #   hostname: testgrafanita
-  #   volumes:
-  #    - grafana_data_test:/var/lib/grafana
-
-
-
-  # frontend:
-  #   depends_on:
-  #     - genesis
-  #   extends:
-  #     service: genesis
-
-  #   build: 
-  #     context: ./${FRONTEND_WORKDIR}
-  #     dockerfile: ./${FRONTEND_DOCKERFILE}
-  #     args:
-  #       - BASE_IMG
-  #       - FLASK_C_WORKDIR=${FRONTEND_C_WORKDIR}
-  #       - FLASK_EXEC_SCRIPT=${FRONTEND_EXEC_SCRIPT}
-  #   image: ${FRONTEND_IMG}
-  #   ports:
-  #     - "${FRONTEND_PORT}:${FRONTEND_PORT}"
-
-  #   hostname: ${FRONTEND_SERVICE}
-  #   container_name: ${FRONTEND_SERVICE}
-
-  #   environment:
-  #     - SERVICE_NAMES=${IMG_GEN_SERVICE}
-  #     - PORT=${FRONTEND_PORT}
-
-
-  #   volumes:
-  #     - ./${FRONTEND_WORKDIR}:${FRONTEND_C_WORKDIR}
-  
-  # text_descriptor:
-  #   depends_on:
-  #     - genesis
-  #   extends:
-  #     service: genesis
-
-  #   build:
-  #     context: ./${TEXT_DESCRIPTOR_WORKDIR}
-  #     dockerfile: ./${TEXT_DESCRIPTOR_DOCKERFILE}
-  #     args:
-  #       - BASE_IMG
-  #       - FLASK_C_WORKDIR=${TEXT_DESCRIPTOR_C_WORKDIR}
-  #       - FLASK_EXEC_SCRIPT=${TEXT_DESCRIPTOR_EXEC_SCRIPT}
-  #   image: ${TEXT_DESCRIPTOR_IMG}
-  #   ports:
-  #     - "${TEXT_DESCRIPTOR_PORT}:${TEXT_DESCRIPTOR_PORT}"
-
-  #   hostname: ${TEXT_DESCRIPTOR_SERVICE}
-  #   container_name: ${TEXT_DESCRIPTOR_SERVICE}
-
-  #   environment:
-  #     - SERVICE_NAMES=${IMG_GEN_SERVICE}
-  #     - PORT=${TEXT_DESCRIPTOR_PORT}
-
-  #   volumes:
-  #     - ./${TEXT_DESCRIPTOR_WORKDIR}:${TEXT_DESCRIPTOR_C_WORKDIR}
-
-  # img_uploader:
-  #   depends_on:
-  #     - genesis
-  #   extends:
-  #     service: genesis
-
-  #   build: 
-  #     context: ./${FRONTEND_WORKDIR}
-  #     dockerfile: ./Dockerfile_flask
-  #     args:
-  #       - BASE_IMG
-  #       - FRONTEND_C_WORKDIR
-  #       - FRONTEND_EXEC_SCRIPT
-  #   image: ${FRONTEND_IMG}
-  #   ports:
-  #     - "${IMG_UPLOADER_PORT}:${IMG_UPLOADER_PORT}"
-
-  #   hostname: ${FRONTEND_SERVICE}
-  #   container_name: ${FRONTEND_SERVICE}
-
-  #   environment:
-  #     - SERVICE_NAMES=${IMG_GEN_SERVICE}
-
-  #   volumes:
-  #     - ./${FRONTEND_WORKDIR}:${FRONTEND_C_WORKDIR}
-
+  ffmpeg:
+    extends:
+      service: genesis
+    depends_on:
+      - videosrv
+    build:
+      target: ffmpeg_tgt
+    image: ffmpeg_img
+    stdin_open: true
+    tty: true
+    environment:
+      - SERVICE_NAMES=GRAY_SCALE
+      - MICROSERVICE=FFmpeg
+    hostname: FFmpeg
+    container_name: FFmpeg
 
 volumes:
   influxdb_data:
-  grafana_data:
-  # grafana_data_test:
+  #grafana_data:
+  

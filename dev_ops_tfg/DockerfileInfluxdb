@@ -1,0 +1,5 @@
+ARG INFLUX_IMG=""
+
+FROM ${INFLUX_IMG} as influx_tgt
+COPY ./cont_scripts/influx_deleteservices.sh /
+ENTRYPOINT ["/influx_deleteservices.sh"]

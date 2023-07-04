@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from influxdb import InfluxDBClient
 
 
 class Publisher(ABC):
@@ -19,7 +20,6 @@ class InfluxDB(Publisher):
     PORT = 8086
 
     def __init__(self, db_name=None, host=None, port=PORT):
-        from influxdb import InfluxDBClient
 
         self.db_name = db_name
         self.host    = host
@@ -30,6 +30,10 @@ class InfluxDB(Publisher):
 
     def publish(self, data: list[dict[str, str | int]]) -> None:
         self.client.write_points(points=data, time_precision='ms')
+        self.client.close()
 
     def query(self, data: str):
-        return list(self.client.query(data).get_points())
+        lista = list(self.client.query(data).get_points())
+        # To flush data
+        self.client.close()
+        return lista

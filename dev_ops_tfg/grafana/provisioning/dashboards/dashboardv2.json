@@ -1,0 +1,1424 @@
+{
+	"annotations": {
+	  "list": [
+		{
+		  "builtIn": 1,
+		  "datasource": {
+			"type": "grafana",
+			"uid": "-- Grafana --"
+		  },
+		  "enable": true,
+		  "hide": true,
+		  "iconColor": "rgba(0, 211, 255, 1)",
+		  "name": "Annotations & Alerts",
+		  "type": "dashboard"
+		}
+	  ]
+	},
+	"editable": true,
+	"fiscalYearStartMonth": 0,
+	"graphTooltip": 0,
+	"id": 1,
+	"links": [],
+	"liveNow": false,
+	"panels": [
+	  {
+		"datasource": {
+		  "type": "influxdb",
+		  "uid": "c3c7699e-29c0-41d9-bab2-e354b32ae05f"
+		},
+		"fieldConfig": {
+		  "defaults": {
+			"color": {
+			  "mode": "thresholds"
+			},
+			"displayName": "Microservices Up",
+			"mappings": [],
+			"max": 10,
+			"min": 0,
+			"noValue": "-",
+			"thresholds": {
+			  "mode": "absolute",
+			  "steps": [
+				{
+				  "color": "green",
+				  "value": null
+				},
+				{
+				  "color": "red",
+				  "value": 80
+				}
+			  ]
+			}
+		  },
+		  "overrides": []
+		},
+		"gridPos": {
+		  "h": 7,
+		  "w": 2,
+		  "x": 0,
+		  "y": 0
+		},
+		"id": 12,
+		"options": {
+		  "orientation": "auto",
+		  "reduceOptions": {
+			"calcs": [
+			  "lastNotNull"
+			],
+			"fields": "",
+			"values": false
+		  },
+		  "showThresholdLabels": false,
+		  "showThresholdMarkers": true,
+		  "text": {}
+		},
+		"pluginVersion": "10.0.0",
+		"targets": [
+		  {
+			"datasource": {
+			  "type": "influxdb",
+			  "uid": "c3c7699e-29c0-41d9-bab2-e354b32ae05f"
+			},
+			"groupBy": [
+			  {
+				"params": [
+				  "$__interval"
+				],
+				"type": "time"
+			  }
+			],
+			"hide": false,
+			"measurement": "services",
+			"orderByTime": "ASC",
+			"policy": "autogen",
+			"query": "SELECT count(DISTINCT(microservice)) FROM  (SELECT microservice,service FROM services WHERE microservice =~ /^$microservice$/ AND time > now()-2m)",
+			"rawQuery": true,
+			"refId": "A",
+			"resultFormat": "time_series",
+			"select": [
+			  [
+				{
+				  "params": [
+					"service"
+				  ],
+				  "type": "field"
+				},
+				{
+				  "params": [],
+				  "type": "count"
+				}
+			  ]
+			],
+			"tags": [
+			  {
+				"key": "microservice::tag",
+				"operator": "=~",
+				"value": "/^$microservice$/"
+			  },
+			  {
+				"condition": "AND",
+				"key": "time",
+				"operator": ">",
+				"value": "now()-1d"
+			  }
+			]
+		  }
+		],
+		"type": "gauge"
+	  },
+	  {
+		"datasource": {
+		  "type": "influxdb",
+		  "uid": "c3c7699e-29c0-41d9-bab2-e354b32ae05f"
+		},
+		"fieldConfig": {
+		  "defaults": {
+			"color": {
+			  "mode": "continuous-BlYlRd"
+			},
+			"custom": {
+			  "align": "auto",
+			  "cellOptions": {
+				"mode": "gradient",
+				"type": "color-background"
+			  },
+			  "inspect": false
+			},
+			"mappings": [],
+			"thresholds": {
+			  "mode": "absolute",
+			  "steps": [
+				{
+				  "color": "green",
+				  "value": null
+				},
+				{
+				  "color": "red",
+				  "value": 80
+				}
+			  ]
+			}
+		  },
+		  "overrides": [
+			{
+			  "matcher": {
+				"id": "byName",
+				"options": "Time"
+			  },
+			  "properties": [
+				{
+				  "id": "custom.hidden",
+				  "value": true
+				}
+			  ]
+			}
+		  ]
+		},
+		"gridPos": {
+		  "h": 7,
+		  "w": 3,
+		  "x": 2,
+		  "y": 0
+		},
+		"id": 13,
+		"options": {
+		  "cellHeight": "sm",
+		  "footer": {
+			"countRows": false,
+			"fields": "",
+			"reducer": [
+			  "sum"
+			],
+			"show": false
+		  },
+		  "showHeader": false
+		},
+		"pluginVersion": "10.0.0",
+		"targets": [
+		  {
+			"datasource": {
+			  "type": "influxdb",
+			  "uid": "c3c7699e-29c0-41d9-bab2-e354b32ae05f"
+			},
+			"groupBy": [
+			  {
+				"params": [
+				  "$__interval"
+				],
+				"type": "time"
+			  }
+			],
+			"hide": false,
+			"measurement": "services",
+			"orderByTime": "ASC",
+			"policy": "autogen",
+			"query": "SELECT DISTINCT(microservice) as MService FROM  (SELECT microservice,service FROM services WHERE microservice =~ /^$microservice$/ AND time > now()-2m)",
+			"rawQuery": true,
+			"refId": "A",
+			"resultFormat": "table",
+			"select": [
+			  [
+				{
+				  "params": [
+					"service"
+				  ],
+				  "type": "field"
+				},
+				{
+				  "params": [],
+				  "type": "count"
+				}
+			  ]
+			],
+			"tags": [
+			  {
+				"key": "microservice::tag",
+				"operator": "=~",
+				"value": "/^$microservice$/"
+			  },
+			  {
+				"condition": "AND",
+				"key": "time",
+				"operator": ">",
+				"value": "now()-1d"
+			  }
+			]
+		  }
+		],
+		"type": "table"
+	  },
+	  {
+		"datasource": {
+		  "type": "influxdb",
+		  "uid": "c3c7699e-29c0-41d9-bab2-e354b32ae05f"
+		},
+		"fieldConfig": {
+		  "defaults": {
+			"color": {
+			  "mode": "fixed"
+			},
+			"mappings": [],
+			"thresholds": {
+			  "mode": "absolute",
+			  "steps": [
+				{
+				  "color": "green",
+				  "value": null
+				},
+				{
+				  "color": "red",
+				  "value": 80
+				}
+			  ]
+			}
+		  },
+		  "overrides": [
+			{
+			  "matcher": {
+				"id": "byName",
+				"options": "networkissues.wsize0"
+			  },
+			  "properties": [
+				{
+				  "id": "displayName",
+				  "value": "WindowSize"
+				},
+				{
+				  "id": "color",
+				  "value": {
+					"fixedColor": "red",
+					"mode": "continuous-reds"
+				  }
+				}
+			  ]
+			},
+			{
+			  "matcher": {
+				"id": "byName",
+				"options": "networkissues.TTL1"
+			  },
+			  "properties": [
+				{
+				  "id": "displayName",
+				  "value": "Time to Live 1"
+				},
+				{
+				  "id": "color",
+				  "value": {
+					"mode": "continuous-purples"
+				  }
+				}
+			  ]
+			},
+			{
+			  "matcher": {
+				"id": "byName",
+				"options": "networkissues.ICMP"
+			  },
+			  "properties": [
+				{
+				  "id": "displayName",
+				  "value": "ICMP"
+				},
+				{
+				  "id": "color",
+				  "value": {
+					"mode": "continuous-YlBl"
+				  }
+				}
+			  ]
+			}
+		  ]
+		},
+		"gridPos": {
+		  "h": 7,
+		  "w": 3,
+		  "x": 5,
+		  "y": 0
+		},
+		"id": 10,
+		"options": {
+		  "displayMode": "gradient",
+		  "minVizHeight": 10,
+		  "minVizWidth": 0,
+		  "orientation": "horizontal",
+		  "reduceOptions": {
+			"calcs": [
+			  "sum"
+			],
+			"fields": "",
+			"values": false
+		  },
+		  "showUnfilled": true,
+		  "valueMode": "color"
+		},
+		"pluginVersion": "10.0.0",
+		"targets": [
+		  {
+			"datasource": {
+			  "type": "influxdb",
+			  "uid": "c3c7699e-29c0-41d9-bab2-e354b32ae05f"
+			},
+			"groupBy": [
+			  {
+				"params": [
+				  "$__interval"
+				],
+				"type": "time"
+			  },
+			  {
+				"params": [
+				  "null"
+				],
+				"type": "fill"
+			  }
+			],
+			"measurement": "networkissues",
+			"orderByTime": "ASC",
+			"policy": "autogen",
+			"query": "SELECT count(wsize0) as wsize0 FROM networkissues WHERE microservice =~ /^$microservice$/ AND pkg_direction =~ /^$direction$/ AND $timeFilter GROUP BY time($__interval) fill(null)",
+			"rawQuery": true,
+			"refId": "A",
+			"resultFormat": "time_series",
+			"select": [
+			  [
+				{
+				  "params": [
+					"ICMP"
+				  ],
+				  "type": "field"
+				},
+				{
+				  "params": [],
+				  "type": "count"
+				}
+			  ]
+			],
+			"tags": []
+		  },
+		  {
+			"datasource": {
+			  "type": "influxdb",
+			  "uid": "c3c7699e-29c0-41d9-bab2-e354b32ae05f"
+			},
+			"hide": false,
+			"query": "SELECT count(ICMP) as ICMP FROM networkissues WHERE microservice =~ /^$microservice$/ AND pkg_direction =~ /^$direction$/ AND $timeFilter GROUP BY time($__interval) fill(null)",
+			"rawQuery": true,
+			"refId": "B",
+			"resultFormat": "time_series"
+		  },
+		  {
+			"datasource": {
+			  "type": "influxdb",
+			  "uid": "c3c7699e-29c0-41d9-bab2-e354b32ae05f"
+			},
+			"hide": false,
+			"query": "SELECT count(TTL1) as TTL1 FROM networkissues WHERE microservice =~ /^$microservice$/ AND $timeFilter GROUP BY time($__interval) fill(null)",
+			"rawQuery": true,
+			"refId": "C",
+			"resultFormat": "time_series"
+		  }
+		],
+		"title": "# Packets",
+		"type": "bargauge"
+	  },
+	  {
+		"datasource": {
+		  "type": "influxdb",
+		  "uid": "c3c7699e-29c0-41d9-bab2-e354b32ae05f"
+		},
+		"fieldConfig": {
+		  "defaults": {
+			"color": {
+			  "mode": "fixed"
+			},
+			"custom": {
+			  "hideFrom": {
+				"legend": false,
+				"tooltip": false,
+				"viz": false
+			  }
+			},
+			"mappings": []
+		  },
+		  "overrides": [
+			{
+			  "matcher": {
+				"id": "byName",
+				"options": "networkissues.wsize0"
+			  },
+			  "properties": [
+				{
+				  "id": "displayName",
+				  "value": "WindowSize"
+				},
+				{
+				  "id": "color",
+				  "value": {
+					"fixedColor": "red",
+					"mode": "fixed"
+				  }
+				}
+			  ]
+			},
+			{
+			  "matcher": {
+				"id": "byName",
+				"options": "networkissues.TTL1"
+			  },
+			  "properties": [
+				{
+				  "id": "displayName",
+				  "value": "Time to Live 1"
+				},
+				{
+				  "id": "color",
+				  "value": {
+					"fixedColor": "purple",
+					"mode": "fixed"
+				  }
+				}
+			  ]
+			},
+			{
+			  "matcher": {
+				"id": "byName",
+				"options": "networkissues.ICMP"
+			  },
+			  "properties": [
+				{
+				  "id": "displayName",
+				  "value": "ICMP"
+				},
+				{
+				  "id": "color",
+				  "value": {
+					"fixedColor": "yellow",
+					"mode": "fixed"
+				  }
+				}
+			  ]
+			}
+		  ]
+		},
+		"gridPos": {
+		  "h": 7,
+		  "w": 4,
+		  "x": 8,
+		  "y": 0
+		},
+		"id": 11,
+		"options": {
+		  "legend": {
+			"displayMode": "list",
+			"placement": "bottom",
+			"showLegend": true
+		  },
+		  "pieType": "pie",
+		  "reduceOptions": {
+			"calcs": [
+			  "sum"
+			],
+			"fields": "",
+			"values": false
+		  },
+		  "tooltip": {
+			"mode": "single",
+			"sort": "none"
+		  }
+		},
+		"pluginVersion": "10.0.0",
+		"targets": [
+		  {
+			"datasource": {
+			  "type": "influxdb",
+			  "uid": "c3c7699e-29c0-41d9-bab2-e354b32ae05f"
+			},
+			"groupBy": [
+			  {
+				"params": [
+				  "$__interval"
+				],
+				"type": "time"
+			  },
+			  {
+				"params": [
+				  "null"
+				],
+				"type": "fill"
+			  }
+			],
+			"measurement": "networkissues",
+			"orderByTime": "ASC",
+			"policy": "autogen",
+			"query": "SELECT count(wsize0) as wsize0 FROM networkissues WHERE microservice =~ /^$microservice$/ AND pkg_direction =~ /^$direction$/ AND $timeFilter GROUP BY time($__interval) fill(null)",
+			"rawQuery": true,
+			"refId": "A",
+			"resultFormat": "time_series",
+			"select": [
+			  [
+				{
+				  "params": [
+					"ICMP"
+				  ],
+				  "type": "field"
+				},
+				{
+				  "params": [],
+				  "type": "count"
+				}
+			  ]
+			],
+			"tags": []
+		  },
+		  {
+			"datasource": {
+			  "type": "influxdb",
+			  "uid": "c3c7699e-29c0-41d9-bab2-e354b32ae05f"
+			},
+			"hide": false,
+			"query": "SELECT count(ICMP) as ICMP FROM networkissues WHERE microservice =~ /^$microservice$/ AND pkg_direction =~ /^$direction$/ AND $timeFilter GROUP BY time($__interval) fill(null)\n",
+			"rawQuery": true,
+			"refId": "B",
+			"resultFormat": "time_series"
+		  },
+		  {
+			"datasource": {
+			  "type": "influxdb",
+			  "uid": "c3c7699e-29c0-41d9-bab2-e354b32ae05f"
+			},
+			"hide": false,
+			"query": "SELECT count(TTL1) as TTL1 FROM networkissues WHERE microservice =~ /^$microservice$/ AND $timeFilter GROUP BY time($__interval) fill(null)",
+			"rawQuery": true,
+			"refId": "C",
+			"resultFormat": "time_series"
+		  }
+		],
+		"title": "# Packets (WS0|ICMP|TTL1)",
+		"type": "piechart"
+	  },
+	  {
+		"datasource": {
+		  "type": "influxdb",
+		  "uid": "c3c7699e-29c0-41d9-bab2-e354b32ae05f"
+		},
+		"fieldConfig": {
+		  "defaults": {
+			"color": {
+			  "fixedColor": "red",
+			  "mode": "palette-classic"
+			},
+			"custom": {
+			  "axisCenteredZero": false,
+			  "axisColorMode": "series",
+			  "axisLabel": "# Packets",
+			  "axisPlacement": "auto",
+			  "barAlignment": 0,
+			  "drawStyle": "line",
+			  "fillOpacity": 42,
+			  "gradientMode": "opacity",
+			  "hideFrom": {
+				"legend": false,
+				"tooltip": false,
+				"viz": false
+			  },
+			  "lineInterpolation": "linear",
+			  "lineStyle": {
+				"fill": "solid"
+			  },
+			  "lineWidth": 1,
+			  "pointSize": 1,
+			  "scaleDistribution": {
+				"type": "linear"
+			  },
+			  "showPoints": "always",
+			  "spanNulls": false,
+			  "stacking": {
+				"group": "A",
+				"mode": "none"
+			  },
+			  "thresholdsStyle": {
+				"mode": "off"
+			  }
+			},
+			"mappings": [],
+			"thresholds": {
+			  "mode": "absolute",
+			  "steps": [
+				{
+				  "color": "green",
+				  "value": null
+				},
+				{
+				  "color": "red",
+				  "value": 80
+				}
+			  ]
+			},
+			"unit": "none"
+		  },
+		  "overrides": []
+		},
+		"gridPos": {
+		  "h": 7,
+		  "w": 12,
+		  "x": 12,
+		  "y": 0
+		},
+		"id": 6,
+		"options": {
+		  "legend": {
+			"calcs": [
+			  "sum"
+			],
+			"displayMode": "list",
+			"placement": "bottom",
+			"showLegend": true
+		  },
+		  "tooltip": {
+			"mode": "single",
+			"sort": "none"
+		  }
+		},
+		"pluginVersion": "10.0.0",
+		"targets": [
+		  {
+			"datasource": {
+			  "type": "influxdb",
+			  "uid": "c3c7699e-29c0-41d9-bab2-e354b32ae05f"
+			},
+			"groupBy": [
+			  {
+				"params": [
+				  "$__interval"
+				],
+				"type": "time"
+			  },
+			  {
+				"params": [
+				  "null"
+				],
+				"type": "fill"
+			  }
+			],
+			"measurement": "networkissues",
+			"orderByTime": "ASC",
+			"policy": "autogen",
+			"query": "SELECT COUNT(wsize0) FROM networkissues WHERE microservice =~ /^$microservice$/ AND pkg_direction =~ /^$direction$/ AND $timeFilter GROUP BY microservice, time($__interval) fill(null)",
+			"rawQuery": true,
+			"refId": "A",
+			"resultFormat": "time_series",
+			"select": [
+			  [
+				{
+				  "params": [
+					"ICMP"
+				  ],
+				  "type": "field"
+				},
+				{
+				  "params": [],
+				  "type": "count"
+				}
+			  ]
+			],
+			"tags": []
+		  }
+		],
+		"title": "WindowSize 0",
+		"transformations": [
+		  {
+			"id": "renameByRegex",
+			"options": {
+			  "regex": "[\\S\\s]+microservice: (.+)}",
+			  "renamePattern": "$1"
+			}
+		  }
+		],
+		"type": "timeseries"
+	  },
+	  {
+		"datasource": {
+		  "type": "influxdb",
+		  "uid": "c3c7699e-29c0-41d9-bab2-e354b32ae05f"
+		},
+		"description": "",
+		"fieldConfig": {
+		  "defaults": {
+			"color": {
+			  "mode": "palette-classic"
+			},
+			"custom": {
+			  "axisCenteredZero": false,
+			  "axisColorMode": "series",
+			  "axisLabel": "",
+			  "axisPlacement": "auto",
+			  "barAlignment": 0,
+			  "drawStyle": "line",
+			  "fillOpacity": 32,
+			  "gradientMode": "opacity",
+			  "hideFrom": {
+				"legend": false,
+				"tooltip": false,
+				"viz": false
+			  },
+			  "lineInterpolation": "linear",
+			  "lineStyle": {
+				"fill": "solid"
+			  },
+			  "lineWidth": 1,
+			  "pointSize": 1,
+			  "scaleDistribution": {
+				"type": "linear"
+			  },
+			  "showPoints": "auto",
+			  "spanNulls": true,
+			  "stacking": {
+				"group": "A",
+				"mode": "none"
+			  },
+			  "thresholdsStyle": {
+				"mode": "off"
+			  }
+			},
+			"mappings": [],
+			"thresholds": {
+			  "mode": "absolute",
+			  "steps": [
+				{
+				  "color": "green",
+				  "value": null
+				},
+				{
+				  "color": "red",
+				  "value": 80
+				}
+			  ]
+			},
+			"unit": "bps"
+		  },
+		  "overrides": [
+			{
+			  "matcher": {
+				"id": "byName",
+				"options": "bandwidth.rate"
+			  },
+			  "properties": [
+				{
+				  "id": "displayName",
+				  "value": "Rate"
+				}
+			  ]
+			}
+		  ]
+		},
+		"gridPos": {
+		  "h": 7,
+		  "w": 12,
+		  "x": 0,
+		  "y": 7
+		},
+		"id": 16,
+		"maxDataPoints": 500,
+		"options": {
+		  "legend": {
+			"calcs": [
+			  "max"
+			],
+			"displayMode": "list",
+			"placement": "bottom",
+			"showLegend": true
+		  },
+		  "tooltip": {
+			"mode": "single",
+			"sort": "none"
+		  }
+		},
+		"pluginVersion": "10.0.0",
+		"targets": [
+		  {
+			"datasource": {
+			  "type": "influxdb",
+			  "uid": "c3c7699e-29c0-41d9-bab2-e354b32ae05f"
+			},
+			"groupBy": [
+			  {
+				"params": [
+				  "$__interval"
+				],
+				"type": "time"
+			  },
+			  {
+				"params": [
+				  "null"
+				],
+				"type": "fill"
+			  }
+			],
+			"measurement": "networkissues",
+			"orderByTime": "ASC",
+			"policy": "autogen",
+			"query": "SELECT mean(bitrate) as rate FROM bandwidth WHERE microservice =~ /^$microservice$/ AND pkg_direction =~ /^$direction$/ AND $timeFilter GROUP BY microservice, time($__interval) fill(null)",
+			"rawQuery": true,
+			"refId": "A",
+			"resultFormat": "time_series",
+			"select": [
+			  [
+				{
+				  "params": [
+					"ICMP"
+				  ],
+				  "type": "field"
+				},
+				{
+				  "params": [],
+				  "type": "count"
+				}
+			  ]
+			],
+			"tags": []
+		  }
+		],
+		"title": "Bandwidth",
+		"transformations": [
+		  {
+			"id": "renameByRegex",
+			"options": {
+			  "regex": "[\\S\\s]+microservice: (.+)}",
+			  "renamePattern": "$1"
+			}
+		  }
+		],
+		"type": "timeseries"
+	  },
+	  {
+		"datasource": {
+		  "type": "influxdb",
+		  "uid": "c3c7699e-29c0-41d9-bab2-e354b32ae05f"
+		},
+		"fieldConfig": {
+		  "defaults": {
+			"color": {
+			  "fixedColor": "yellow",
+			  "mode": "palette-classic"
+			},
+			"custom": {
+			  "axisCenteredZero": false,
+			  "axisColorMode": "series",
+			  "axisLabel": "# Packets",
+			  "axisPlacement": "auto",
+			  "barAlignment": 0,
+			  "drawStyle": "line",
+			  "fillOpacity": 42,
+			  "gradientMode": "opacity",
+			  "hideFrom": {
+				"legend": false,
+				"tooltip": false,
+				"viz": false
+			  },
+			  "lineInterpolation": "linear",
+			  "lineStyle": {
+				"fill": "solid"
+			  },
+			  "lineWidth": 1,
+			  "pointSize": 1,
+			  "scaleDistribution": {
+				"type": "linear"
+			  },
+			  "showPoints": "always",
+			  "spanNulls": false,
+			  "stacking": {
+				"group": "A",
+				"mode": "none"
+			  },
+			  "thresholdsStyle": {
+				"mode": "off"
+			  }
+			},
+			"mappings": [],
+			"thresholds": {
+			  "mode": "absolute",
+			  "steps": [
+				{
+				  "color": "green",
+				  "value": null
+				},
+				{
+				  "color": "red",
+				  "value": 80
+				}
+			  ]
+			},
+			"unit": "none"
+		  },
+		  "overrides": []
+		},
+		"gridPos": {
+		  "h": 8,
+		  "w": 12,
+		  "x": 12,
+		  "y": 7
+		},
+		"id": 14,
+		"options": {
+		  "legend": {
+			"calcs": [
+			  "sum"
+			],
+			"displayMode": "list",
+			"placement": "bottom",
+			"showLegend": true
+		  },
+		  "tooltip": {
+			"mode": "single",
+			"sort": "none"
+		  }
+		},
+		"pluginVersion": "10.0.0",
+		"targets": [
+		  {
+			"datasource": {
+			  "type": "influxdb",
+			  "uid": "c3c7699e-29c0-41d9-bab2-e354b32ae05f"
+			},
+			"groupBy": [
+			  {
+				"params": [
+				  "$__interval"
+				],
+				"type": "time"
+			  },
+			  {
+				"params": [
+				  "null"
+				],
+				"type": "fill"
+			  }
+			],
+			"measurement": "networkissues",
+			"orderByTime": "ASC",
+			"policy": "autogen",
+			"query": "SELECT COUNT(ICMP) FROM networkissues WHERE microservice =~ /^$microservice$/ AND pkg_direction =~ /^$direction$/ AND $timeFilter GROUP BY microservice, time($__interval) fill(null)",
+			"rawQuery": true,
+			"refId": "A",
+			"resultFormat": "time_series",
+			"select": [
+			  [
+				{
+				  "params": [
+					"ICMP"
+				  ],
+				  "type": "field"
+				},
+				{
+				  "params": [],
+				  "type": "count"
+				}
+			  ]
+			],
+			"tags": []
+		  }
+		],
+		"title": "ICMP Packets",
+		"transformations": [
+		  {
+			"id": "renameByRegex",
+			"options": {
+			  "regex": "[\\S\\s]+microservice: (.+)}",
+			  "renamePattern": "$1"
+			}
+		  }
+		],
+		"type": "timeseries"
+	  },
+	  {
+		"datasource": {
+		  "type": "influxdb",
+		  "uid": "c3c7699e-29c0-41d9-bab2-e354b32ae05f"
+		},
+		"description": "",
+		"fieldConfig": {
+		  "defaults": {
+			"color": {
+			  "fixedColor": "blue",
+			  "mode": "palette-classic"
+			},
+			"custom": {
+			  "axisCenteredZero": false,
+			  "axisColorMode": "series",
+			  "axisLabel": "# Packets",
+			  "axisPlacement": "auto",
+			  "barAlignment": 0,
+			  "drawStyle": "line",
+			  "fillOpacity": 49,
+			  "gradientMode": "opacity",
+			  "hideFrom": {
+				"legend": false,
+				"tooltip": false,
+				"viz": false
+			  },
+			  "lineInterpolation": "linear",
+			  "lineWidth": 1,
+			  "pointSize": 1,
+			  "scaleDistribution": {
+				"type": "linear"
+			  },
+			  "showPoints": "always",
+			  "spanNulls": true,
+			  "stacking": {
+				"group": "A",
+				"mode": "none"
+			  },
+			  "thresholdsStyle": {
+				"mode": "off"
+			  }
+			},
+			"mappings": [],
+			"thresholds": {
+			  "mode": "absolute",
+			  "steps": [
+				{
+				  "color": "green",
+				  "value": null
+				},
+				{
+				  "color": "red",
+				  "value": 80
+				}
+			  ]
+			},
+			"unit": "none"
+		  },
+		  "overrides": []
+		},
+		"gridPos": {
+		  "h": 8,
+		  "w": 12,
+		  "x": 0,
+		  "y": 14
+		},
+		"id": 9,
+		"maxDataPoints": 500,
+		"options": {
+		  "legend": {
+			"calcs": [
+			  "sum"
+			],
+			"displayMode": "list",
+			"placement": "bottom",
+			"showLegend": true
+		  },
+		  "tooltip": {
+			"mode": "single",
+			"sort": "none"
+		  }
+		},
+		"pluginVersion": "10.0.0",
+		"targets": [
+		  {
+			"datasource": {
+			  "type": "influxdb",
+			  "uid": "c3c7699e-29c0-41d9-bab2-e354b32ae05f"
+			},
+			"groupBy": [
+			  {
+				"params": [
+				  "$__interval"
+				],
+				"type": "time"
+			  },
+			  {
+				"params": [
+				  "null"
+				],
+				"type": "fill"
+			  }
+			],
+			"measurement": "networkissues",
+			"orderByTime": "ASC",
+			"policy": "autogen",
+			"query": "SELECT sum(numpaqs) FROM bandwidth WHERE microservice =~ /^$microservice$/ AND pkg_direction =~ /^$direction$/ AND $timeFilter GROUP BY microservice, time($__interval) fill(null)",
+			"rawQuery": true,
+			"refId": "A",
+			"resultFormat": "time_series",
+			"select": [
+			  [
+				{
+				  "params": [
+					"ICMP"
+				  ],
+				  "type": "field"
+				},
+				{
+				  "params": [],
+				  "type": "count"
+				}
+			  ]
+			],
+			"tags": []
+		  }
+		],
+		"title": "# Total Packets",
+		"transformations": [
+		  {
+			"id": "renameByRegex",
+			"options": {
+			  "regex": "[\\S\\s]+microservice: (.+)}",
+			  "renamePattern": "$1"
+			}
+		  }
+		],
+		"type": "timeseries"
+	  },
+	  {
+		"datasource": {
+		  "type": "influxdb",
+		  "uid": "c3c7699e-29c0-41d9-bab2-e354b32ae05f"
+		},
+		"fieldConfig": {
+		  "defaults": {
+			"color": {
+			  "fixedColor": "yellow",
+			  "mode": "palette-classic"
+			},
+			"custom": {
+			  "axisCenteredZero": false,
+			  "axisColorMode": "series",
+			  "axisLabel": "# Packets",
+			  "axisPlacement": "auto",
+			  "barAlignment": 0,
+			  "drawStyle": "line",
+			  "fillOpacity": 42,
+			  "gradientMode": "opacity",
+			  "hideFrom": {
+				"legend": false,
+				"tooltip": false,
+				"viz": false
+			  },
+			  "lineInterpolation": "linear",
+			  "lineStyle": {
+				"fill": "solid"
+			  },
+			  "lineWidth": 1,
+			  "pointSize": 1,
+			  "scaleDistribution": {
+				"type": "linear"
+			  },
+			  "showPoints": "always",
+			  "spanNulls": false,
+			  "stacking": {
+				"group": "A",
+				"mode": "none"
+			  },
+			  "thresholdsStyle": {
+				"mode": "off"
+			  }
+			},
+			"mappings": [],
+			"thresholds": {
+			  "mode": "absolute",
+			  "steps": [
+				{
+				  "color": "green",
+				  "value": null
+				},
+				{
+				  "color": "red",
+				  "value": 80
+				}
+			  ]
+			},
+			"unit": "none"
+		  },
+		  "overrides": []
+		},
+		"gridPos": {
+		  "h": 8,
+		  "w": 12,
+		  "x": 12,
+		  "y": 15
+		},
+		"id": 15,
+		"options": {
+		  "legend": {
+			"calcs": [
+			  "sum"
+			],
+			"displayMode": "list",
+			"placement": "bottom",
+			"showLegend": true
+		  },
+		  "tooltip": {
+			"mode": "single",
+			"sort": "none"
+		  }
+		},
+		"pluginVersion": "10.0.0",
+		"targets": [
+		  {
+			"datasource": {
+			  "type": "influxdb",
+			  "uid": "c3c7699e-29c0-41d9-bab2-e354b32ae05f"
+			},
+			"groupBy": [
+			  {
+				"params": [
+				  "$__interval"
+				],
+				"type": "time"
+			  },
+			  {
+				"params": [
+				  "null"
+				],
+				"type": "fill"
+			  }
+			],
+			"measurement": "networkissues",
+			"orderByTime": "ASC",
+			"policy": "autogen",
+			"query": "SELECT COUNT(TTL1) FROM networkissues WHERE microservice =~ /^$microservice$/ AND $timeFilter GROUP BY microservice, time($__interval) fill(null)",
+			"rawQuery": true,
+			"refId": "A",
+			"resultFormat": "time_series",
+			"select": [
+			  [
+				{
+				  "params": [
+					"ICMP"
+				  ],
+				  "type": "field"
+				},
+				{
+				  "params": [],
+				  "type": "count"
+				}
+			  ]
+			],
+			"tags": []
+		  }
+		],
+		"title": "TimeToLive=1",
+		"transformations": [
+		  {
+			"id": "renameByRegex",
+			"options": {
+			  "regex": "[\\S\\s]+microservice: (.+)}",
+			  "renamePattern": "$1"
+			}
+		  }
+		],
+		"type": "timeseries"
+	  }
+	],
+	"refresh": "10s",
+	"schemaVersion": 38,
+	"style": "dark",
+	"tags": [],
+	"templating": {
+	  "list": [
+		{
+		  "current": {
+			"selected": true,
+			"text": [
+			  "All"
+			],
+			"value": [
+			  "$__all"
+			]
+		  },
+		  "datasource": {
+			"type": "influxdb",
+			"uid": "c3c7699e-29c0-41d9-bab2-e354b32ae05f"
+		  },
+		  "definition": "select distinct(service) from services where time > now() - 2m",
+		  "description": "List of services",
+		  "hide": 0,
+		  "includeAll": true,
+		  "label": "Service",
+		  "multi": true,
+		  "name": "service",
+		  "options": [],
+		  "query": "select distinct(service) from services where time > now() - 2m",
+		  "refresh": 1,
+		  "regex": "",
+		  "skipUrlSync": false,
+		  "sort": 0,
+		  "type": "query"
+		},
+		{
+		  "current": {
+			"selected": true,
+			"text": [
+			  "All"
+			],
+			"value": [
+			  "$__all"
+			]
+		  },
+		  "datasource": {
+			"type": "influxdb",
+			"uid": "c3c7699e-29c0-41d9-bab2-e354b32ae05f"
+		  },
+		  "definition": "select distinct(microservice) from (select microservice,service from services where service =~ /^$service$/ AND time > now()-2m)",
+		  "hide": 0,
+		  "includeAll": true,
+		  "label": "Microservice",
+		  "multi": true,
+		  "name": "microservice",
+		  "options": [],
+		  "query": "select distinct(microservice) from (select microservice,service from services where service =~ /^$service$/ AND time > now()-2m)",
+		  "refresh": 2,
+		  "regex": "",
+		  "skipUrlSync": false,
+		  "sort": 1,
+		  "type": "query"
+		},
+		{
+		  "current": {
+			"selected": true,
+			"text": [
+			  "out",
+			  "in"
+			],
+			"value": [
+			  "out",
+			  "in"
+			]
+		  },
+		  "hide": 0,
+		  "includeAll": false,
+		  "label": "In/Out",
+		  "multi": true,
+		  "name": "direction",
+		  "options": [
+			{
+			  "selected": true,
+			  "text": "in",
+			  "value": "in"
+			},
+			{
+			  "selected": true,
+			  "text": "out",
+			  "value": "out"
+			}
+		  ],
+		  "query": "in,out",
+		  "queryValue": "",
+		  "skipUrlSync": false,
+		  "type": "custom"
+		}
+	  ]
+	},
+	"time": {
+	  "from": "now-15m",
+	  "to": "now"
+	},
+	"timepicker": {},
+	"timezone": "",
+	"title": "Network Monitor v2",
+	"uid": "b89d90fb-69f4-4a83-b418-56a59dd8857e",
+	"version": 7,
+	"weekStart": ""
+  }

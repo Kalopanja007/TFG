@@ -51,7 +51,7 @@ def process_networkpackage(np: NetworkProbe):
     b_issues = False
 
     w_size = get_window_size(np)
-    if not (w_size is None) and w_size < 512 :
+    if not (w_size is None) and w_size < 1 :
         data["fields"]["wsize0"] = True
         b_issues = True
 
@@ -106,7 +106,7 @@ def publish_accum_data(num_bytes_in, num_bytes__out, num_packets_in, num_packets
     try:
         publisher.publish([data_in])
         publisher.publish([data_out])
-    except:
+    except Exception:
         print("Error writing Bandwidth data")
 
 
@@ -178,7 +178,7 @@ def publish_services_devoted(publisher: InfluxDB):
 
 if __name__ == "__main__":
 
-    INFLUX_DB_NAME     = os.environ.get("INFLUX_DB_NAME", "influx")
+    INFLUX_DB_NAME     = os.environ.get("INFLUX_DB_NAME", "monitoring")
     DB_HOST     = os.environ.get("INFLUX_CONTAINER", "influxdb")
     INFLUX_DB_PORT     = int(os.environ.get("INFLUX_DB_PORT", 8086))
 
@@ -233,9 +233,7 @@ if __name__ == "__main__":
             # Being periodic, instead of a one off when starting the microservice has two advantages:
             # - If InflixDB data is lost, 'services' measurement will be filled in again in a short period of time
             # - Publishing every few seconds informs that the microservide is alive
-            if t_pubservices_inicper==0:
-                t_pubservices_inicper = ts
-            if ts - t_pubservices_inicper > 30:
+            if t_pubservices_inicper==0 or ts - t_pubservices_inicper > 30:
                 publish_services_devoted(publisher)
                 t_pubservices_inicper = ts
 
