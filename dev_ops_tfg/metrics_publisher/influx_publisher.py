@@ -160,7 +160,7 @@ def publish_services_devoted(publisher: InfluxDB):
     mservice = os.environ.get("MICROSERVICE", "nonamed")
 
     try:
-        publisher.query(f"delete from services where microservice='{mservice}'")
+        #publisher.query(f"delete from services where microservice='{mservice}'")
         for service in services:
             data = {
                 "measurement": "services",

@@ -2,4 +2,5 @@ ARG INFLUX_IMG=""
 
 FROM ${INFLUX_IMG} as influx_tgt
 COPY ./cont_scripts/influx_deleteservices.sh /
+RUN crontab -l | sed "$ a\@hourly influx -precision rfc3339 -database monitoring -execute 'delete from services where time < now() - 5m' >/dev/null 2>&1" |crontab -
 ENTRYPOINT ["/influx_deleteservices.sh"]

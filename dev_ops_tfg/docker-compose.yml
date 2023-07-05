@@ -38,22 +38,22 @@ services:
 
 
   # For testing
-  grafana2:
-    depends_on:
-      - influxdb
-    image: grafana_test
-    container_name: grafana_prueba_cont
-    environment:
-     #- GF_SERVER_ROOT_URL=http://my.grafana.server/
-     #- GF_INSTALL_PLUGINS=grafana-clock-panel
-      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning  # Default value, but to ensure ir
-      #- GF_AUTH_DISABLE_LOGIN_FORM=true
-      #- GF_AUTH_ANONYMOUS_ENABLED=true
-      #- GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
-    ports:
-     - '3001:${GRAFANA_PORT}'
-    volumes:
-      - ./grafana/provisioning:/etc/grafana/provisioning
+  # grafana2:
+  #   depends_on:
+  #     - influxdb
+  #   image: grafana_test
+  #   container_name: grafana_prueba_cont
+  #   environment:
+  #    #- GF_SERVER_ROOT_URL=http://my.grafana.server/
+  #    #- GF_INSTALL_PLUGINS=grafana-clock-panel
+  #     - GF_PATHS_PROVISIONING=/etc/grafana/provisioning  # Default value, but to ensure ir
+  #     #- GF_AUTH_DISABLE_LOGIN_FORM=true
+  #     #- GF_AUTH_ANONYMOUS_ENABLED=true
+  #     #- GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+  #   ports:
+  #    - '3001:${GRAFANA_PORT}'
+  #   volumes:
+  #     - ./grafana/provisioning:/etc/grafana/provisioning
 
   genesis:
     depends_on:
