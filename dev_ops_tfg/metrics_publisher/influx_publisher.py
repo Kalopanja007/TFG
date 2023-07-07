@@ -77,7 +77,7 @@ def influxdb_server_ip():
 
 
 
-def publish_accum_data(num_bytes_in, num_bytes__out, num_packets_in, num_packets_out, num_secs):
+def publish_accum_data(num_bytes_in, num_bytes_out, num_packets_in, num_packets_out, num_secs):
     bitrate_in = num_bytes_in * 8 / num_secs
     bitrate_out = num_bytes_out * 8 / num_secs
     data_in = {
