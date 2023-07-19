@@ -60,7 +60,7 @@ services:
       - influxdb
     build:
       context: .
-      target: ${BASE_IMG}
+      target: ffmpeg_tgt
       #dockerfile: ./Dockerfile
       args:
         - PROBE_FOLDER
@@ -70,7 +70,7 @@ services:
       - INFLUX_DB_PORT
       - INFLUX_DB_NAME
       - C_WORKDIR
-    image: ${BASE_IMG}
+    image: ffmpeg_tgt
     volumes:
       - ./${PROBE_FOLDER}:${C_WORKDIR}
 
