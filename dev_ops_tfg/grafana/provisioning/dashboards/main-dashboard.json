@@ -18,7 +18,7 @@
 	"editable": true,
 	"fiscalYearStartMonth": 0,
 	"graphTooltip": 0,
-	"id": 2,
+	"id": 1,
 	"links": [],
 	"liveNow": false,
 	"panels": [
@@ -607,7 +607,7 @@
 		  "defaults": {
 			"color": {
 			  "fixedColor": "red",
-			  "mode": "fixed"
+			  "mode": "palette-classic"
 			},
 			"custom": {
 			  "axisCenteredZero": false,
@@ -658,23 +658,10 @@
 			},
 			"unit": "none"
 		  },
-		  "overrides": [
-			{
-			  "matcher": {
-				"id": "byName",
-				"options": "networkissues.count"
-			  },
-			  "properties": [
-				{
-				  "id": "displayName",
-				  "value": "Window Size 0 Packets"
-				}
-			  ]
-			}
-		  ]
+		  "overrides": []
 		},
 		"gridPos": {
-		  "h": 8,
+		  "h": 7,
 		  "w": 12,
 		  "x": 12,
 		  "y": 0
@@ -718,7 +705,7 @@
 			"measurement": "networkissues",
 			"orderByTime": "ASC",
 			"policy": "autogen",
-			"query": "SELECT count(wsize0) FROM networkissues WHERE microservice =~ /^$microservice$/ AND pkg_direction =~ /^$direction$/ AND $timeFilter GROUP BY time($__interval) fill(null)",
+			"query": "SELECT COUNT(wsize0) FROM networkissues WHERE microservice =~ /^$microservice$/ AND pkg_direction =~ /^$direction$/ AND $timeFilter GROUP BY microservice, time($__interval) fill(null)",
 			"rawQuery": true,
 			"refId": "A",
 			"resultFormat": "time_series",
@@ -740,6 +727,15 @@
 		  }
 		],
 		"title": "WindowSize 0",
+		"transformations": [
+		  {
+			"id": "renameByRegex",
+			"options": {
+			  "regex": "[\\S\\s]+microservice: (.+)}",
+			  "renamePattern": "$1"
+			}
+		  }
+		],
 		"type": "timeseries"
 	  },
 	  {
@@ -760,7 +756,7 @@
 			  "axisPlacement": "auto",
 			  "barAlignment": 0,
 			  "drawStyle": "line",
-			  "fillOpacity": 40,
+			  "fillOpacity": 32,
 			  "gradientMode": "opacity",
 			  "hideFrom": {
 				"legend": false,
@@ -772,11 +768,11 @@
 				"fill": "solid"
 			  },
 			  "lineWidth": 1,
-			  "pointSize": 2,
+			  "pointSize": 1,
 			  "scaleDistribution": {
 				"type": "linear"
 			  },
-			  "showPoints": "always",
+			  "showPoints": "auto",
 			  "spanNulls": true,
 			  "stacking": {
 				"group": "A",
@@ -823,7 +819,7 @@
 		  "x": 0,
 		  "y": 7
 		},
-		"id": 8,
+		"id": 16,
 		"maxDataPoints": 500,
 		"options": {
 		  "legend": {
@@ -863,7 +859,7 @@
 			"measurement": "networkissues",
 			"orderByTime": "ASC",
 			"policy": "autogen",
-			"query": "SELECT mean(bitrate) as rate FROM bandwidth WHERE microservice =~ /^$microservice$/ AND pkg_direction =~ /^$direction$/ AND $timeFilter GROUP BY time($__interval) fill(null)",
+			"query": "SELECT mean(bitrate) as rate FROM bandwidth WHERE microservice =~ /^$microservice$/ AND pkg_direction =~ /^$direction$/ AND $timeFilter GROUP BY microservice, time($__interval) fill(null)",
 			"rawQuery": true,
 			"refId": "A",
 			"resultFormat": "time_series",
@@ -885,6 +881,15 @@
 		  }
 		],
 		"title": "Bandwidth",
+		"transformations": [
+		  {
+			"id": "renameByRegex",
+			"options": {
+			  "regex": "[\\S\\s]+microservice: (.+)}",
+			  "renamePattern": "$1"
+			}
+		  }
+		],
 		"type": "timeseries"
 	  },
 	  {
@@ -896,7 +901,7 @@
 		  "defaults": {
 			"color": {
 			  "fixedColor": "yellow",
-			  "mode": "fixed"
+			  "mode": "palette-classic"
 			},
 			"custom": {
 			  "axisCenteredZero": false,
@@ -905,7 +910,7 @@
 			  "axisPlacement": "auto",
 			  "barAlignment": 0,
 			  "drawStyle": "line",
-			  "fillOpacity": 30,
+			  "fillOpacity": 42,
 			  "gradientMode": "opacity",
 			  "hideFrom": {
 				"legend": false,
@@ -947,29 +952,15 @@
 			},
 			"unit": "none"
 		  },
-		  "overrides": [
-			{
-			  "matcher": {
-				"id": "byName",
-				"options": "networkissues.count"
-			  },
-			  "properties": [
-				{
-				  "id": "displayName",
-				  "value": "ICMP Packets"
-				}
-			  ]
-			}
-		  ]
+		  "overrides": []
 		},
 		"gridPos": {
-		  "h": 7,
+		  "h": 8,
 		  "w": 12,
 		  "x": 12,
-		  "y": 8
+		  "y": 7
 		},
-		"id": 1,
-		"maxDataPoints": 500,
+		"id": 14,
 		"options": {
 		  "legend": {
 			"calcs": [
@@ -1008,7 +999,7 @@
 			"measurement": "networkissues",
 			"orderByTime": "ASC",
 			"policy": "autogen",
-			"query": "SELECT count(ICMP) FROM networkissues WHERE microservice =~ /^$microservice$/ AND pkg_direction =~ /^$direction$/ AND $timeFilter GROUP BY time($__interval) fill(null)",
+			"query": "SELECT COUNT(ICMP) FROM networkissues WHERE microservice =~ /^$microservice$/ AND pkg_direction =~ /^$direction$/ AND $timeFilter GROUP BY microservice, time($__interval) fill(null)",
 			"rawQuery": true,
 			"refId": "A",
 			"resultFormat": "time_series",
@@ -1030,6 +1021,15 @@
 		  }
 		],
 		"title": "ICMP Packets",
+		"transformations": [
+		  {
+			"id": "renameByRegex",
+			"options": {
+			  "regex": "[\\S\\s]+microservice: (.+)}",
+			  "renamePattern": "$1"
+			}
+		  }
+		],
 		"type": "timeseries"
 	  },
 	  {
@@ -1042,7 +1042,7 @@
 		  "defaults": {
 			"color": {
 			  "fixedColor": "blue",
-			  "mode": "shades"
+			  "mode": "palette-classic"
 			},
 			"custom": {
 			  "axisCenteredZero": false,
@@ -1090,20 +1090,7 @@
 			},
 			"unit": "none"
 		  },
-		  "overrides": [
-			{
-			  "matcher": {
-				"id": "byName",
-				"options": "bandwidth.sum"
-			  },
-			  "properties": [
-				{
-				  "id": "displayName",
-				  "value": "Num.Packs"
-				}
-			  ]
-			}
-		  ]
+		  "overrides": []
 		},
 		"gridPos": {
 		  "h": 8,
@@ -1151,7 +1138,7 @@
 			"measurement": "networkissues",
 			"orderByTime": "ASC",
 			"policy": "autogen",
-			"query": "SELECT sum(numpaqs) FROM bandwidth WHERE microservice =~ /^$microservice$/ AND pkg_direction =~ /^$direction$/ AND $timeFilter GROUP BY time($__interval) fill(null)",
+			"query": "SELECT sum(numpaqs) FROM bandwidth WHERE microservice =~ /^$microservice$/ AND pkg_direction =~ /^$direction$/ AND $timeFilter GROUP BY microservice, time($__interval) fill(null)",
 			"rawQuery": true,
 			"refId": "A",
 			"resultFormat": "time_series",
@@ -1173,6 +1160,15 @@
 		  }
 		],
 		"title": "# Total Packets",
+		"transformations": [
+		  {
+			"id": "renameByRegex",
+			"options": {
+			  "regex": "[\\S\\s]+microservice: (.+)}",
+			  "renamePattern": "$1"
+			}
+		  }
+		],
 		"type": "timeseries"
 	  },
 	  {
@@ -1183,8 +1179,8 @@
 		"fieldConfig": {
 		  "defaults": {
 			"color": {
-			  "fixedColor": "purple",
-			  "mode": "fixed"
+			  "fixedColor": "yellow",
+			  "mode": "palette-classic"
 			},
 			"custom": {
 			  "axisCenteredZero": false,
@@ -1193,7 +1189,7 @@
 			  "axisPlacement": "auto",
 			  "barAlignment": 0,
 			  "drawStyle": "line",
-			  "fillOpacity": 0,
+			  "fillOpacity": 42,
 			  "gradientMode": "opacity",
 			  "hideFrom": {
 				"legend": false,
@@ -1201,6 +1197,9 @@
 				"viz": false
 			  },
 			  "lineInterpolation": "linear",
+			  "lineStyle": {
+				"fill": "solid"
+			  },
 			  "lineWidth": 1,
 			  "pointSize": 1,
 			  "scaleDistribution": {
@@ -1229,30 +1228,18 @@
 				  "value": 80
 				}
 			  ]
-			}
+			},
+			"unit": "none"
 		  },
-		  "overrides": [
-			{
-			  "matcher": {
-				"id": "byName",
-				"options": "networkissues.count"
-			  },
-			  "properties": [
-				{
-				  "id": "displayName",
-				  "value": "TTL1 Packets"
-				}
-			  ]
-			}
-		  ]
+		  "overrides": []
 		},
 		"gridPos": {
-		  "h": 7,
+		  "h": 8,
 		  "w": 12,
 		  "x": 12,
 		  "y": 15
 		},
-		"id": 7,
+		"id": 15,
 		"options": {
 		  "legend": {
 			"calcs": [
@@ -1291,7 +1278,7 @@
 			"measurement": "networkissues",
 			"orderByTime": "ASC",
 			"policy": "autogen",
-			"query": "SELECT count(TTL1) FROM networkissues WHERE microservice =~ /^$microservice$/ AND $timeFilter GROUP BY time($__interval) fill(null)",
+			"query": "SELECT COUNT(TTL1) FROM networkissues WHERE microservice =~ /^$microservice$/ AND $timeFilter GROUP BY microservice, time($__interval) fill(null)",
 			"rawQuery": true,
 			"refId": "A",
 			"resultFormat": "time_series",
@@ -1313,10 +1300,19 @@
 		  }
 		],
 		"title": "TimeToLive=1",
+		"transformations": [
+		  {
+			"id": "renameByRegex",
+			"options": {
+			  "regex": "[\\S\\s]+microservice: (.+)}",
+			  "renamePattern": "$1"
+			}
+		  }
+		],
 		"type": "timeseries"
 	  }
 	],
-	"refresh": "10s",
+	"refresh": "5s",
 	"schemaVersion": 38,
 	"style": "dark",
 	"tags": [],
@@ -1422,7 +1418,7 @@
 	"timepicker": {},
 	"timezone": "",
 	"title": "Network Monitor",
-	"uid": "b89d90fb-69f4-4a83-b418-56a59dd8857d",
-	"version": 3,
+	"uid": "b89d90fb-69f4-4a83-b418-56a59dd8857e",
+	"version": 7,
 	"weekStart": ""
   }

@@ -18,8 +18,6 @@ services:
       - INFLUXDB_DB=${INFLUX_DB_NAME}
       - INFLUXDB_ADMIN_USER="admin"
       - INFLUXDB_ADMIN_PASSWORD="admin"
-    # ports:  # Redirection is not necessary
-    #   - '${INFLUX_DB_PORT}:${INFLUX_DB_PORT}'
     volumes:
       - influxdb_data:/var/lib/influxdb
 
@@ -37,46 +35,27 @@ services:
       - ./grafana/provisioning:/etc/grafana/provisioning
 
 
-  # For testing
-  # grafana2:
-  #   depends_on:
-  #     - influxdb
-  #   image: grafana_test
-  #   container_name: grafana_prueba_cont
-  #   environment:
-  #    #- GF_SERVER_ROOT_URL=http://my.grafana.server/
-  #    #- GF_INSTALL_PLUGINS=grafana-clock-panel
-  #     - GF_PATHS_PROVISIONING=/etc/grafana/provisioning  # Default value, but to ensure ir
-  #     #- GF_AUTH_DISABLE_LOGIN_FORM=true
-  #     #- GF_AUTH_ANONYMOUS_ENABLED=true
-  #     #- GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
-  #   ports:
-  #    - '3001:${GRAFANA_PORT}'
-  #   volumes:
-  #     - ./grafana/provisioning:/etc/grafana/provisioning
-
-  genesis:
+  microservicetemplate:
     depends_on:
       - influxdb
     build:
       context: .
       target: ffmpeg_tgt
-      #dockerfile: ./Dockerfile
+      #dockerfile: ./Dockerfile # By default, this is the used dockerfile
       args:
         - PROBE_FOLDER
         - C_WORKDIR
     environment:
       - INFLUX_CONTAINER
-      - INFLUX_DB_PORT
       - INFLUX_DB_NAME
       - C_WORKDIR
-    image: ffmpeg_tgt
+    image: ffmpeg_img
     volumes:
       - ./${PROBE_FOLDER}:${C_WORKDIR}
 
   MServ_1:
     extends:
-      service: genesis
+      service: microservicetemplate
     stdin_open: true
     tty: true
     environment:
@@ -87,7 +66,7 @@ services:
 
   MServ_2:
     extends:
-      service: genesis
+      service: microservicetemplate
     stdin_open: true
     tty: true
     environment:
@@ -98,7 +77,7 @@ services:
 
   MServ_3:
     extends:
-      service: genesis
+      service: microservicetemplate
     stdin_open: true
     tty: true
     environment:
@@ -109,7 +88,7 @@ services:
 
   MServ_4:
     extends:
-      service: genesis
+      service: microservicetemplate
     stdin_open: true
     tty: true
     environment:
@@ -120,7 +99,7 @@ services:
 
   MServ_5:
     extends:
-      service: genesis
+      service: microservicetemplate
     stdin_open: true
     tty: true
     environment:
@@ -131,7 +110,7 @@ services:
 
   MServ_6:
     extends:
-      service: genesis
+      service: microservicetemplate
     stdin_open: true
     tty: true
     environment:
@@ -142,7 +121,7 @@ services:
 
   MServ_7:
     extends:
-      service: genesis
+      service: microservicetemplate
     stdin_open: true
     tty: true
     environment:
@@ -153,7 +132,7 @@ services:
 
   videosrv:
     extends:
-      service: genesis
+      service: microservicetemplate
     build:
       target: videosrv_tgt
     image: videosrv_img
@@ -167,7 +146,7 @@ services:
 
   ffmpeg:
     extends:
-      service: genesis
+      service: microservicetemplate
     depends_on:
       - videosrv
     build:
@@ -183,5 +162,3 @@ services:
 
 volumes:
   influxdb_data:
-  #grafana_data:
-  

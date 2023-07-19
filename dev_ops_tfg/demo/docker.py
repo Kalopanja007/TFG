@@ -1,4 +1,3 @@
-from icecream import ic
 from random import choice, randint
 from os import system
 
@@ -19,7 +18,7 @@ def container_is_up(container: str) -> bool:
 
 def test():
     cont = random_container()
-    ic(cont, container_is_up(cont))
+    print(cont, container_is_up(cont))
 
 def random_container() -> str:
     while True:
@@ -76,7 +75,7 @@ def main():
     pass
 
     # stop()
-    # ping()
+    ping()
     ffmpeg()
     # test()
 
