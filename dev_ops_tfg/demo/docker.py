@@ -76,8 +76,8 @@ def main():
     pass
 
     # stop()
-    ping()
-    # ffmpeg()
+    # ping()
+    ffmpeg()
     # test()
 
 

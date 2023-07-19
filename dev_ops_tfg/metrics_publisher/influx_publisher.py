@@ -4,8 +4,6 @@ from waiting import wait
 
 from probeTemplates.Publisher import InfluxDB
 
-from sniffer import convert_timestamp
-
 from probeTemplates.NetworkProbe import NetworkProbe
 from networkAPI.utils.obj_repr import ObjRepr
 
