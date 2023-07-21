@@ -1,5 +1,6 @@
 from random import choice, randint
 from os import system
+from time import sleep
 
 SERVICES = ["IMG_GEN", "ASCII_ART", "GRAY_SCALE"]
 
@@ -15,6 +16,13 @@ def container_is_up(container: str) -> bool:
     if system(f"{CMD}") == 0:
         ret = True
     return ret
+
+def is_running():
+    import subprocess
+    DOCKER_CMD = "docker ps -q"
+    ret = subprocess.check_output(f"{DOCKER_CMD}", shell=True, universal_newlines=True)
+    
+    return False if ret == '' else True
 
 def test():
     cont = random_container()
@@ -72,14 +80,21 @@ def ffmpeg():
 
 
 def main():
-    pass
 
-    # stop()
-    ping()
-    ffmpeg()
-    # test()
+    seconds = randint(2,8)
 
+    if is_running():
+        # stop()
+        ping()
 
+        sleep(seconds)
+        print(f"Waiting {seconds} seconds")
+        
+        ffmpeg()
+        # test()
+    
+    else:
+        print("Microservices are not running :(")
 
 if __name__ == "__main__":
     pass
