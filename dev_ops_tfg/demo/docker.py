@@ -87,8 +87,8 @@ def main():
         # stop()
         ping()
 
-        sleep(seconds)
         print(f"Waiting {seconds} seconds")
+        sleep(seconds)
         
         ffmpeg()
         # test()
